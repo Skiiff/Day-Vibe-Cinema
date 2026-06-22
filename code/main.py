@@ -39,7 +39,7 @@ def usermenu(username):
             ) 
             AND (type = 'movie' OR type = 'tvSeries' OR type = 'tvMovie')
             AND akas.region = 'RU'
-            ORDER BY ratings.rating DESC
+            ORDER BY ratings.rating DESC, ratings.votes DESC
             LIMIT 1
             """
 
