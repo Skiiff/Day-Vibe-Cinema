@@ -21,9 +21,8 @@ def usermenu(username):
             connimdb = sql.connect("imdb.db")
             curimdb =  connimdb.cursor()
             curimdb.execute("ATTACH DATABASE 'users.db' AS users")
-            conditions = " OR ".join(
-                ["titles.genres LIKE ?" for _ in genres]
-            )
+            conditions = "titles.genres LIKE ? AND (titles.genres LIKE ? OR titles.genres LIKE ?)"
+
             query = f"""
             SELECT titles.title_id
             FROM titles
@@ -37,9 +36,9 @@ def usermenu(username):
                 FROM users.vieved
                 WHERE user_id = ?
             ) 
-            AND (type = 'movie' OR type = 'tvSeries' OR type = 'tvMovie')
-            AND akas.region = 'RU'
-            ORDER BY ratings.rating DESC, ratings.votes DESC
+            AND (type = 'movie')
+            AND akas.region = 'RU' AND akas.region NOT IN ('CN', 'IN')
+            ORDER BY (ratings.rating * LOG(ratings.votes + 1)) DESC
             LIMIT 1
             """
 
